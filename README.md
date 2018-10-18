@@ -37,6 +37,9 @@ Create Service & Characteristic
 * BLE Beacon คือการที่ตัวอุปกรณ์ อยู่ใน State Advertising ข้อมูล นั้นๆออกมาตลอดเวลาไม่มีการ Connect โดยเมื่อเทียบเคียงกับอุปกรณ์อื่นจะทำหน้าที่คล้ายๆ RFID card หรือ จะเป็น Barcode เป็นต้น
 * เข้าไปที่ nRF5_SDK/exsamples/ble_peripheral/ble_app_beacon และนี้คือข้อมูลที่เราต้องการ Advertise 
   ![beacon-1](https://user-images.githubusercontent.com/27261111/47136409-cfc1f380-d2dd-11e8-9b63-859f5372f2bb.png)
+* จากนั้นทำการ Compile และ Flash โปรแกรมตามที่ผ่านมา
+* เมื่อเปิด App nRF Connect ขึ้นมา จะมีชื่อสำหรับ beacon เพราะไม่มีใส่เอาไว้ เมื่อกดเข้าไปดูข้อมูลภายใน จะเห็นว่า เหมือนกับที่เราได้ตั้งค่าเอาไว้
+  ![image](https://user-images.githubusercontent.com/27261111/47136617-6abacd80-d2de-11e8-8dfb-5ea66417f153.png)
   ```
   vim contiki/cpu/cc26xx-cc13xx/lib/cc26xxware/startup_files/ccfg.c
   ```
