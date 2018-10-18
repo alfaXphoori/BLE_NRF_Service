@@ -70,7 +70,9 @@ Create Service & Characteristic
   #define MY_SERVICE_UUID_BASE         {0x44, 0x05, 0x61, 0x10, 0x61, 0x85, 0xc0, 0x84, 0x29, 0x4a, 0x8f, 0x7f, 0xd3, 0xff, 0x14, 0x9b}
 #define MY_SERVICE_UUID               0xABCD
   ```
+  
 * จากนั้นทำการ สร้าง struct สำหรับเก็บค่าต่างๆ ตามนี้
+
   ```
   typedef enum
   {
@@ -105,6 +107,7 @@ Create Service & Characteristic
       uint8_t                       uuid_type;
   };
   ```
+  
 * ตั่งชื่อ function ที่จะต้องไปใช้ ใน ble_ser.c สำหรับเชื่อมโยงการทำงาน เป็นอันเสร็จ สำหรับ ไฟล์ ble_ser.h
 
   ```
