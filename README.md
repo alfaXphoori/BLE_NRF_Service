@@ -35,48 +35,84 @@ Create Service & Characteristic
 
 ## Create Beacon nRF SDK
 * BLE Beacon คือการที่ตัวอุปกรณ์ อยู่ใน State Advertising ข้อมูล นั้นๆออกมาตลอดเวลาไม่มีการ Connect โดยเมื่อเทียบเคียงกับอุปกรณ์อื่นจะทำหน้าที่คล้ายๆ RFID card หรือ จะเป็น Barcode เป็นต้น
+
 * เข้าไปที่ nRF5_SDK/exsamples/ble_peripheral/ble_app_beacon และนี้คือข้อมูลที่เราต้องการ Advertise 
+
   ![beacon-1](https://user-images.githubusercontent.com/27261111/47136409-cfc1f380-d2dd-11e8-9b63-859f5372f2bb.png)
+  
 * จากนั้นทำการ Compile และ Flash โปรแกรมตามที่ผ่านมา
+
 * เมื่อเปิด App nRF Connect ขึ้นมา จะมีชื่อสำหรับ beacon เพราะไม่มีใส่เอาไว้ เมื่อกดเข้าไปดูข้อมูลภายใน จะเห็นว่า เหมือนกับที่เราได้ตั้งค่าเอาไว้
+
   ![image](https://user-images.githubusercontent.com/27261111/47136617-6abacd80-d2de-11e8-8dfb-5ea66417f153.png)
+  
+## Create Service nRF SDK
+* เข้าไปที่ nRF5_SDK/exsamples/ble_peripheral/ble_app_template เราจะทำการเพิ่ม Service ตัวใหม่เข้าไปใน application นี้
+
+* ทำการสร้างไฟล์ใหม่ขึ้นมา ชื่อ ble_ser.h และทำการเพิ่มไฟล์ include ที่จำเป็นเข้ามา
+
   ```
-  vim contiki/cpu/cc26xx-cc13xx/lib/cc26xxware/startup_files/ccfg.c
+  #include <stdint.h>
+  #include <stdbool.h>
+  #include "ble.h"
+  #include "ble_srv_common.h"
+
+  #define BLE_SER_DEF(_name)       	\
+  static ble_ser_t _name;   		\
   ```
-  Change as:
+
+* จากนั้นทำการใส่ UUID สำหรับ ble service นี้ โดยที่ UUID จะมีขนาดเท่ากับ 128 bit โดยเราสามารถสร้าง UUID นี้ได้จาก https://www.uuidgenerator.net/version4  
+  โดยที่ UUID ที่ได้รับการสร้างขึ้นจะเป็นตัวเดียวในโลกโดยที่ไม่ซ้ำกัน ดังนั้นเราจะได้เป็น 
+9b14ffd3-7f8f-4a29-84c0-856110610544  
+  โดยรูปแบบของ UUID จะเป็น 8-4-4-4-12 โดยการใส่ UUID เราจะใส่แบบเรียงจากหลังมาหน้า ดังนี้
+
   ```
-  #define SET_CCFG_BL_CONFIG_BOOTLOADER_ENABLE  0xC5
-  #define SET_CCFG_BL_CONFIG_BL_LEVEL           0x0
-  #define SET_CCFG_BL_CONFIG_BL_PIN_NUMBER      0x0D
-  #define SET_CCFG_BL_CONFIG_BL_ENABLE          0xC5
+  #define MY_SERVICE_UUID_BASE         {0x44, 0x05, 0x61, 0x10, 0x61, 0x85, 0xc0, 0x84, 0x29, 0x4a, 0x8f, 0x7f, 0xd3, 0xff, 0x14, 0x9b}
+#define MY_SERVICE_UUID               0xABCD
   ```
-* เมื่อเสร็จแล้วทำการ compile program ใน folder contiki/example/cc26xx โดยใช้คำสั่ง
+* จากนั้นทำการ สร้าง struct สำหรับเก็บค่าต่างๆ ตามนี้
   ```
-  cd contiki/example/cc26xx
-  make BOARD=launchpad/cc2650 cc26xx-demo
+  typedef enum
+  {
+      BLE_SER_EVT_NOTIFICATION_ENABLED,
+      BLE_SER_EVT_NOTIFICATION_DISABLED,
+      BLE_SER_EVT_DISCONNECTED,
+      BLE_SER_EVT_CONNECTED
+  } ble_ser_evt_type_t;
+
+  typedef struct
+  {
+      ble_ser_evt_type_t evt_type;                                 
+  } ble_ser_evt_t;
+
+  typedef struct ble_ser_s ble_ser_t;
+
+  typedef void (*ble_ser_evt_handler_t) (ble_ser_t * p_bas, ble_ser_evt_t * p_evt);
+
+  typedef struct
+  {
+      ble_ser_evt_handler_t         evt_handler;
+      uint8_t                       initial_custom_value;
+      ble_srv_cccd_security_mode_t  custom_value_char_attr_md;
+  } ble_ser_init_t;
+
+  struct ble_ser_s
+  {
+      ble_ser_evt_handler_t         evt_handler;
+      uint16_t                      service_handle;
+      ble_gatts_char_handles_t      custom_value_handles;
+      uint16_t                      conn_handle;
+      uint8_t                       uuid_type;
+  };
   ```
-  ![tools-4](https://user-images.githubusercontent.com/27261111/45929470-86031900-bf7c-11e8-8abd-8a4fdba02a48.png)
-* เมื่อทำการ compile เสร็จสิ้นจะได้ ไฟล์ cc26xx-demo.hew มา นำไป flash program ครั้งแรกเพื่อทำติดตั้ง bootloder ใหม่ โดยโปรแกรม Flash programmer 2 หรือ Uniflash
-  * [FLASH-PROGRAMMER-2](http://www.ti.com/tool/FLASH-PROGRAMMER)
-  * [UNIFLASH](http://www.ti.com/tool/UNIFLASH)
-* โดยการ Flash program เราจะต้องมีการ config ค่า baudrate ในค่าที่บอร์ดรองรับในทีนี้เป็น 115200 โดยทำตามขั้นตอน
+* ตั่งชื่อ function ที่จะต้องไปใช้ ใน ble_ser.c สำหรับเชื่อมโยงการทำงาน เป็นอันเสร็จ สำหรับ ไฟล์ ble_ser.h
+
   ```
-  vim contiki/platform/srf06-cc26xx/launchpad/Makefile.launchpad
+  uint32_t ble_ser_init(ble_ser_t * p_ser, const ble_ser_init_t * p_ser_init);
   ```
-  add:
-  ```
-  BSL_FLAGS += -e -w -v -b 115200
-  ```
-  ![tools-11](https://user-images.githubusercontent.com/27261111/45929592-1d1ca080-bf7e-11e8-8dc0-2950e194b05f.png)
-* โดยการ Flash program จะต้องมาการเข้าสู้ bootloader ด้วยการกดปุ่ม BTN-1 + RESET บนบอร์ด และการทำ flash ตามคำสั่ง
-  ```
-  cd contiki/example/cc26xx
-  make BOARD=launchpad/cc2650 cc26xx-demo.upload PORT=/dev/ttyACM0
-  ```
-  ถ้า Error ตามภาพ ในทุกครั้งที่มีการ flash ผ่าน ubuntu จะต้องมีการกด ปุ่ม BTN-1 + RESET ทุกครั้ง ถ้าไม่กดแสดงว่าเข้าbootloader ไม่ได้มันจึง error
-  ![tools-12](https://user-images.githubusercontent.com/27261111/45929628-99af7f00-bf7e-11e8-8cc7-d1d6c536f534.png)
-  สุดท้ายถ้าทำตามขั้นตอนทั้งหมด และถูกต้องเราก็จะสามารถ flash program ผ่าน ubuntu ได้ดังรูป
-  ![tools-13](https://user-images.githubusercontent.com/27261111/45929638-c368a600-bf7e-11e8-88b7-8fb680412d93.png)
+  
+* ต่อไปเป็นการสร้างจัดการในส่วนไฟล์ ble_ser.c อันดับแรกสร้างไฟล์ ble_ser.c ขึ้นมา พร้อมเปิดไฟล์ขึ้นมาและทำการ Include ไฟล์ต่างๆ
+
   
   ## Boarder-router
 * เมื่อเราทำการ install Contiki เสร็จแล้ว ทำการเข้าไปที่ Folder contiki/example/ipv6 และทำการ make border-router เมื่อเสร็จจะได้ดังภาพ
