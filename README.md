@@ -3,6 +3,7 @@ Create Service & Characteristic
 
 * [Install and Compile NRF52 by SEGGER Embedded Studio](#install-and-compile-nrf52-by-segger-embedded-studio)
 * [Create Beacon nRF SDK](#create-beacon-nrf-sdk)
+* [Create Service nRF SDK](#create-service-nrf-sdk)
 * [Create Characteristic on Service BLE nRF SDK](#create-characteristic-on-service-ble-nrf-sdk)
 
 ## Install and Compile NRF52 by SEGGER Embedded Studio
