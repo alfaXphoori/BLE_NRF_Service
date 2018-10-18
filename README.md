@@ -2,7 +2,7 @@
 Create Service & Characteristic 
 
 * [Install and Compile NRF52 by SEGGER Embedded Studio](#install-and-compile-nrf52-by-segger-embedded-studio)
-* [Flash program by Ubuntu](#flash-program-by-ubuntu)
+* [Create Beacon nRF SDK](#create-beacon-nrf-sdk)
 * [Boarder router](#boarder-router)
 
 ## Install and Compile NRF52 by SEGGER Embedded Studio
@@ -22,6 +22,7 @@ Create Service & Characteristic
 * ทำการ Flash โปรแกรมลงบอร์ดnRF52832 โดยเชื่อมต่อ บอร์ดเข้ากับคอมพิวเตอร์ และทำการกด F5  เมื่อเสร็จแล้วทำการกดปุ่ม Shift+F5 เพื่อให้บอร์ดเริ่มทำงาน 
   ![install-6](https://user-images.githubusercontent.com/27261111/47136051-af456980-d2dc-11e8-9cda-18d22df22d17.png)
 * จากนั้นทำการ Download Application nRF Connect บนมือถือ เพื่อใช้ตรวจจับ สัญญาณ BLE ที่ปล่อยออกมา 
+
    nRF Connnect : Anddroid
     https://play.google.com/store/apps/details?id=no.nordicsemi.android.mcp&hl=th
 
@@ -32,7 +33,7 @@ Create Service & Characteristic
     
     ![install-7](https://user-images.githubusercontent.com/27261111/47136094-d0a65580-d2dc-11e8-8d0f-e6daae3d35f6.png)
 
-## Flash program by Ubuntu
+## Create Beacon nRF SDK
 * ทำการ Config file ccfg.c ใน Contiki โดยใช้ editor ต่างๆ โดยผู้เขียนจะใช้ vim ในการ edit
   ```
   vim contiki/cpu/cc26xx-cc13xx/lib/cc26xxware/startup_files/ccfg.c
