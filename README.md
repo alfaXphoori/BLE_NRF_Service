@@ -1,11 +1,11 @@
 # BLE_NRF
 Create Service & Characteristic 
 
-* [Install Toolchain](#install-toolchain)
+* [Install and Compile NRF52 by SEGGER Embedded Studio](#Install-and-Compile-NRF52-by-SEGGER-Embedded-Studio)
 * [Flash program by Ubuntu](#flash-program-by-ubuntu)
 * [Boarder router](#boarder-router)
 
-## Install Toolchain
+## Install and Compile NRF52 by SEGGER Embedded Studio
 * Download and install Ubuntu จาก www.ubuntu.com
   ![tools-1](https://user-images.githubusercontent.com/27261111/45924664-e4ee7100-bf2f-11e8-9c7c-18328c487c6b.png)
 * เมื่อ install เสร็จทำการ update ubuntu และ install git ผ่านทาง terminal:
