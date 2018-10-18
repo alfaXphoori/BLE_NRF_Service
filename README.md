@@ -1,5 +1,5 @@
-# contiki_cc2650
-Learning contiki-os with Ubuntu 18.04 on cc2650 
+# BLE_NRF
+Create Service & Characteristic 
 
 * [Install Toolchain](#install-toolchain)
 * [Flash program by Ubuntu](#flash-program-by-ubuntu)
