@@ -1,13 +1,14 @@
 # BLE_NRF
 Create Service & Characteristic 
 
-* [Install and Compile NRF52 by SEGGER Embedded Studio](#Install-and-Compile-NRF52-by-SEGGER-Embedded-Studio)
+* [Install and Compile NRF52 by SEGGER Embedded Studio](#install-and-compile-nrf52-by-segger-embedded-studio)
 * [Flash program by Ubuntu](#flash-program-by-ubuntu)
 * [Boarder router](#boarder-router)
 
 ## Install and Compile NRF52 by SEGGER Embedded Studio
-* Download and install Ubuntu จาก www.ubuntu.com
-  ![tools-1](https://user-images.githubusercontent.com/27261111/45924664-e4ee7100-bf2f-11e8-9c7c-18328c487c6b.png)
+* •	Download โปรแกรม Segger Embedded Studio จาก https://www.segger.com/downloads/embedded-studio
+  ![install-1](https://user-images.githubusercontent.com/27261111/47130455-f1ae7c80-d2c3-11e8-854e-56ccbae629ef.png)
+
 * เมื่อ install เสร็จทำการ update ubuntu และ install git ผ่านทาง terminal:
   ```
   sudo apt-get upgade -y
