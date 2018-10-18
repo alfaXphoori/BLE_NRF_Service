@@ -151,7 +151,6 @@ Create Service & Characteristic
               return err_code;
           }
       }
-
   ```
   
 * ทำการเพิ่ม function สำหรับการจัดการ event ภายใน ble state
@@ -211,7 +210,6 @@ Create Service & Characteristic
               }
           }
       }
-
   ```
   
 * จากนั้นทำการเปิดไฟล์ main.c ขึ้นมา ทำการ include file ที่เราได้สร้างขึ้นมาเข้าไป
@@ -229,7 +227,6 @@ Create Service & Characteristic
     {
         { MY_SERVICE_UUID_BASE, BLE_UUID_TYPE_BLE }
     };
-
   ```
   
 * ทำการไปที่ function static void services_init(void) และทำการเพิ่ม code ดังนี้เพื่อเป็นการเปิดใช้ service ใน main programs
@@ -241,7 +238,6 @@ Create Service & Characteristic
 
       err_code = ble_ser_init(&m_ser, &ser_init);
       APP_ERROR_CHECK(err_code);
-
   ```
 
 * ทำการเพิ่ม ไฟล์libery ble_ser.c ที่เราสร้างขึ้นมาใหม่เพื่อให้โปรแกรมสามารถดึงไฟล์ไป compile ได้ โดยเข้าที่ไป        nRF_SDK/nRF5_SDK/examples/ble_peripheral/ble_my_service/pca10040/s132/ses/ble_app_template_pca10040_s132.emProject และทำการเพิ่มคำสั่งนี้ลงไป 
@@ -250,7 +246,6 @@ Create Service & Characteristic
     <folder Name="nRF_BLE_Services">
         <file file_name="../../../ble_ser.c" />
       </folder>
-
   ```
 
 * เมื่อเสร็จแล้วทำการ compile และ flash program และ ทำการเปิด application nRF Connect ในเมือถือ และการ Scan หา BLE ที่เราได้สร้างขึ้นมา
@@ -276,7 +271,6 @@ Create Service & Characteristic
 
       ble_uuid.type = p_ser->uuid_type;
       ble_uuid.uuid = MY_SERVICE_UUID;
-
   ```
   
   พิ่มคำสั่งนี้เข้าไปแทนที่
@@ -293,7 +287,6 @@ Create Service & Characteristic
         { MY_SERVICE_UUID_BASE, BLE_UUID_TYPE_BLE } 
         {Environmental_Sensing_UUID, BLE_UUID_TYPE_BLE }
     };
-
   ```
 * เมื่อเสร็จแล้วทำการ compile และ flash program และ ทำการเปิด application nRF Connect ในเมือถือ และการ Scan หา BLE ที่เราได้สร้างขึ้นมา จะเห็นว่าเป็น Environmental_Sensing Service
 
@@ -301,34 +294,323 @@ Create Service & Characteristic
   
   
   ## Create Characteristic on Service BLE nRF SDK
-* เมื่อเราทำการ install Contiki เสร็จแล้ว ทำการเข้าไปที่ Folder contiki/example/ipv6 และทำการ make border-router เมื่อเสร็จจะได้ดังภาพ
-    ```
-    cd contiki/examples/ipv6
-    sudo make TARGET=srf06-cc26xx BOARD=launchpad/cc2650 border-router
+* เมื่อเราได้ Service มาแล้วต่อไปจะเป็นการสร้าง Characteristic ใน Service ที่เราสร้างมา
+* ในการสร้าง Characteristic จะเป็นการสร้างส่วนเพิ่มเข้าไปใน Service ที่เราได้สร้างมาแล้ว ดังนั้นทำการ copy folder ble_my_service และทำการตั้งชื่อใหม่เป็น ble_my_service_characteristic เริ่มต้นจากการตั้งชื่อ function ใน ble_ser.h โดยฟังก์ชั่นนี้เป็นการเพิ่ม characteristic ใหม่เข้าไปใน Service ที่สร้างมาก่อนแล้ว
 
     ```
-    ![br1](https://user-images.githubusercontent.com/27261111/45938769-3ca3df80-bff7-11e8-9c2c-af284da28c76.png)
-* ทำการ Flash program border-router.hex โดยใช้โปรแกรม Flash programmer 2 หรือ Uniflash และทำการเชื่อมต่อกับ ubuntu ต่อไป
-* จากนั้นทำการใช้ Tunslip6 โดยเข้าไปที่ contiki/tools และทำการ make tunslip6
+    static uint32_t ble_value_char_add(ble_cus_t * p_ser, const ble_ser_init_t * p_ser_init)
     ```
-    cd contki/tools
-    sudo make tunslip6
-    ```
-* เมื่อ tunslip6 พร้อมแล้ว เราจะทำการเปิดการใช้งาน ด้วยคำสั่ง 
-    ```
-    sudo ./tunslip6 aaaa::1/64 -s /dev/ttyACM0
-    ```
-    เสร็จแล้วให้ทำการกด Reset ที่ บอร์ด  2 ครั้ง จะได้ ip ของ boarder-router ตามลูกศร เป็นอันเสร็จสิ้นการเชื่อมต่อ Network ส่วนของ IEEE 802.15.4 เข้าเก็บ Ubuntu
-    ![br2](https://user-images.githubusercontent.com/27261111/45938805-9efce000-bff7-11e8-9e94-f8f919b6e1ad.png)
-* เมื่อได้ ip boarder-router เสร็จแล้ว จะมาทำการ make โนด client เพื่อทำการเชื่อมต่อกับ boarder-router โดยเข้าไปที่ contiki/examples/ipv6/rpl-udp
+* ทำการเปิดใช้งาน softdevice โดยการเพิ่มคำสั่งนี้ลงไป 
   ```
-  cd contiki/examples/ipv6/rpl-udp
-  sudo make TARGET=srf06-cc26xx BOARD=launchpad/cc2650 udp-client
+    NRF_SDH_BLE_OBSERVER(_name ## _obs,              \
+                       BLE_HRS_BLE_OBSERVER_PRIO,         \
+                       ble_ser_on_ble_evt, &_name)
+  ```
+  ทำการเพิ่มชื่อฟังก์ชั่น ใน ble_ser.h เพื่อเป็นการเปิดใช้งาน softdevice
+  ```
+  void ble_ser_on_ble_evt( ble_evt_t const * p_ble_evt, void * p_context);
+  ```
+  จากนั้นทำการเพิ่ม function ที่ได้ตั้งชื่อไว้แล้วเข้าไปใน ble_ser.c โดนฟังก์ชั่นจะแสดงดังนี้
+  ```
+          void ble_ser_on_ble_evt( ble_evt_t const * p_ble_evt, void * p_context)
+        {
+            ble_ser_t * p_ser = (ble_ser_t *) p_context;
+
+            NRF_LOG_INFO("BLE event received. Event type = %d\r\n", p_ble_evt->header.evt_id);
+            if (p_ser == NULL || p_ble_evt == NULL)
+            {
+                return;
+            }
+
+            switch (p_ble_evt->header.evt_id)
+            {
+                case BLE_GAP_EVT_CONNECTED:
+                    on_connect(p_ser, p_ble_evt);
+                    break;
+
+                   case BLE_GAP_EVT_DISCONNECTED:
+                        on_disconnect(p_ser, p_ble_evt);
+                        break;
+
+                    case BLE_GATTS_EVT_WRITE:
+                        on_write(p_ser, p_ble_evt);
+                        break;
+        /* Handling this event is not necessary
+                    case BLE_GATTS_EVT_EXCHANGE_MTU_REQUEST:
+                        NRF_LOG_INFO("EXCHANGE_MTU_REQUEST event received.\r\n");
+                        break;
+        */
+                    default:
+                        // No implementation needed.
+                        break;
+                }
+        }
+  ```
+* จากนั้นไปยัง ไฟล์ ble_ser.c ทำการเพิ่มฟังก์ชั่นที่ได้ตั้งชื่อไว้แล้วไว้ในนั้น
+
+  ```
+    static uint32_t ble_value_char_add(ble_cus_t * p_ser, const ble_ser_init_t * p_ser_init)
+
+      uint32_t            err_code;
+      ble_gatts_char_md_t char_md;
+      ble_gatts_attr_md_t cccd_md;
+      ble_gatts_attr_t    attr_char_value;
+      ble_uuid_t          ble_uuid;
+      ble_gatts_attr_md_t attr_md;
+
+      memset(&cccd_md, 0, sizeof(cccd_md));
+
+  ```
+* จากนั้นทำการ ทำการ ตั้งค่าให้ Characteristic ที่สร้างขึ้นให้มี สามารถ Read Write และ Notify ค่าสำหรับ BLE Device โดนในการเปิดการงานจะเป็น 1 และ 0 เป็นการปิด
+
+  ```
+    char_md.char_props.read   = 1;
+    char_md.char_props.write  = 1;
+    char_md.char_props.notify = 1;
+  ```
+* ทำการกำหนดค่าให้ BLE Device สามารถส่งและรับค่าได้ โดยการตั้งค่าเป็น
+  ```
+    custom_value_char_attr_md.read_perm
+    custom_value_char_attr_md.write_perm
   ```
   
-  เมื่อ make เสร็จทำการ Flash program และทำการเปิด web browser แล้วใส่ ip board-router จะเห็นได้ว่า board-router สามารถมองเห็น client ตัวไหนได้บ้าง
+* ทำการ add ค่า UUID ให้กับ Characteristic ที่เราได้สร้างขึ้นมา
+
+  ```
+    BLE_UUID_BLE_ASSIGN(ble_uuid, Temperature_Characteristic_UUID);
+
+    memset(&attr_char_value, 0, sizeof(attr_char_value));
+    attr_char_value.p_uuid    = &ble_uuid;
+    attr_char_value.p_attr_md = &attr_md;
+    attr_char_value.init_len  = len_s;//sizeof(uint8_t);
+    attr_char_value.init_offs = 0;
+    attr_char_value.max_len   = len_s;//sizeof(uint8_t);
+  ```
   
-  ![br3](https://user-images.githubusercontent.com/27261111/45938858-074bc180-bff8-11e8-9067-4c489aa2dadc.png)
+* แล้วจะทำการ add Characteristic ที่เราสร้างขึ้นมาเข้าไปใน ble_gatt โดย sd_ble_gatts_characteristic_add กับ struct ที่ได้สร้างขึ้นมา
+
+  ```
+      err_code = sd_ble_gatts_characteristic_add(p_ser->service_handle, &char_md,
+                                               &attr_char_value,
+                                               &p_ser->custom_value_handles);
+  ```
   
-  เสร็จแล้วจะทำการ ping ไปยังโนด client แสดงว่า client สามารถเชื่อต่อได้ ดังนั้น border-router และ tunslip6 จะทำหน้าที่เป็นตัวสร้าง network ระหว่างวง IEEE 802.15.4 กับ ubnutu เราโดยการสร้าง interface อีกตัวนึงมาเพื่อเชื่อมต่อกันและกัน
-  ![br4](https://user-images.githubusercontent.com/27261111/45938864-192d6480-bff8-11e8-8f8d-becfb6dd23c3.png)
+* ทำการเพิ่ม คำสั่ง add characteristic เข้าไป ใน ble_ser_init() 
+
+  ```
+    return ble_value_char_add(p_ser, p_ser_init);
+  ```
+  
+* สุดท้ายแล้ว Function ทั้งหมดจะได้ดังนี้
+
+  ```
+          static uint32_t ble_value_char_add(ble_ser_t * p_ser, const ble_ser_init_t * p_ser_init)
+        {
+            uint32_t            err_code;
+            ble_gatts_char_md_t char_md;
+            ble_gatts_attr_md_t cccd_md;
+            ble_gatts_attr_t    attr_char_value;
+            ble_uuid_t          ble_uuid;
+            ble_gatts_attr_md_t attr_md;
+
+            // Add Custom Value characteristic
+            memset(&cccd_md, 0, sizeof(cccd_md));
+
+            //  Read  operation on cccd should be possible without authentication.
+            BLE_GAP_CONN_SEC_MODE_SET_OPEN(&cccd_md.read_perm);
+            BLE_GAP_CONN_SEC_MODE_SET_OPEN(&cccd_md.write_perm);
+
+            cccd_md.write_perm = p_ser_init->custom_value_char_attr_md.cccd_write_perm;
+            cccd_md.vloc       = BLE_GATTS_VLOC_STACK;
+
+            memset(&char_md, 0, sizeof(char_md));
+
+            char_md.char_props.read   = 1;
+            char_md.char_props.write  = 1;
+            char_md.char_props.notify = 1;
+            char_md.p_char_user_desc  = NULL;
+            char_md.p_char_pf         = NULL;
+            char_md.p_user_desc_md    = NULL;
+            char_md.p_cccd_md         = &cccd_md;
+            char_md.p_sccd_md         = NULL;
+
+            BLE_UUID_BLE_ASSIGN(ble_uuid, Temperature_Characteristic_UUID);
+
+            memset(&attr_md, 0, sizeof(attr_md));
+
+            attr_md.read_perm  = p_ser_init->custom_value_char_attr_md.read_perm;
+            attr_md.write_perm = p_ser_init->custom_value_char_attr_md.write_perm;
+            attr_md.vloc       = BLE_GATTS_VLOC_STACK;
+            attr_md.rd_auth    = 0;
+            attr_md.wr_auth    = 0;
+            attr_md.vlen       = 0;
+
+            memset(&attr_char_value, 0, sizeof(attr_char_value));
+
+            attr_char_value.p_uuid    = &ble_uuid;
+            attr_char_value.p_attr_md = &attr_md;
+            attr_char_value.init_len  = sizeof(uint8_t);
+            attr_char_value.init_offs = 0;
+            attr_char_value.max_len   = sizeof(uint8_t);
+
+            err_code = sd_ble_gatts_characteristic_add(p_ser->service_handle, &char_md,
+                                                       &attr_char_value,
+                                                       &p_ser->custom_value_handles);
+            if (err_code != NRF_SUCCESS)
+            {
+                return err_code;
+            }
+
+            return NRF_SUCCESS;
+        }
+  ```
+  
+* ทำการแก้ไฟล์ main.c ตามนี้
+
+  ```
+    ble_ser_init_t      ser_init = {0};
+    ser_init.evt_handler                = on_ser_evt;
+
+    BLE_GAP_CONN_SEC_MODE_SET_OPEN(&ser_init.custom_value_char_attr_md.cccd_write_perm);
+            BLE_GAP_CONN_SEC_MODE_SET_OPEN(&ser_init.custom_value_char_attr_md.read_perm);
+            BLE_GAP_CONN_SEC_MODE_SET_OPEN(&ser_init.custom_value_char_attr_md.write_perm);
+
+    err_code = ble_ser_init(&m_ser, &ser_init);
+    APP_ERROR_CHECK(err_code);
+  ```
+* เมื่อเสร็จแล้วทำการ compile และ flash program และ ทำการเปิด application nRF Connect ในเมือถือ และการ Scan หา BLE ที่เราได้สร้างขึ้นมา จะเห็นว่าเป็น Environmental_Sensing Service กดเข้าไปจะเห็น characteristic ที่เราสร้างขึ้นที่สามารถ read write และ notify ได้
+
+  ![char-1](https://user-images.githubusercontent.com/27261111/47138485-ba4fc800-d2e3-11e8-8dd2-792b286ff665.png)
+  
+* จากนั้นทำการเพื่อฟังก์ชั่นเพื่อให้สามารถส่งข้อมูลออกไปทาง read characteristic ได้ โดยการตั้งชื่อฟังก์ชั่น ble_ser_custom_value_update() เข้าใน ble_ser.h เข้าไป
+
+  ```
+    uint32_t ble_ser_custom_value_update(ble_ser_t * p_ser, uint8_t custom_value);
+  ```
+  
+  ทำการเปิดไฟล์ ble_ser.c และสร้างฟังก์ชั่น การทำงาน ตามข้างล่างนี้ 
+  
+  ```
+              uint32_t ble_ser_custom_value_update(ble_ser_t * p_ser, uint8_t custom_value)
+          {
+              NRF_LOG_INFO("In ble_cus_custom_value_update. \r\n");
+              if (p_ser == NULL)
+              {
+                  return NRF_ERROR_NULL;
+              }
+
+              uint32_t err_code = NRF_SUCCESS;
+              ble_gatts_value_t gatts_value;
+
+              // Initialize value struct.
+              memset(&gatts_value, 0, sizeof(gatts_value));
+
+              gatts_value.len     = sizeof(uint8_t);
+              gatts_value.offset  = 0;
+              gatts_value.p_value = &custom_value;
+
+              // Update database.
+              err_code = sd_ble_gatts_value_set(p_ser->conn_handle,
+                                                p_ser->custom_value_handles.value_handle,
+                                                &gatts_value);
+              if (err_code != NRF_SUCCESS)
+              {
+                  return err_code;
+              }
+
+              // Send value if connected and notifying.
+              if ((p_ser->conn_handle != BLE_CONN_HANDLE_INVALID))
+              {
+                  ble_gatts_hvx_params_t hvx_params;
+
+                  memset(&hvx_params, 0, sizeof(hvx_params));
+
+                  hvx_params.handle = p_ser->custom_value_handles.value_handle;
+                  hvx_params.type   = BLE_GATT_HVX_NOTIFICATION;
+                  hvx_params.offset = gatts_value.offset;
+                  hvx_params.p_len  = &gatts_value.len;
+                  hvx_params.p_data = gatts_value.p_value;
+
+                  err_code = sd_ble_gatts_hvx(p_ser->conn_handle, &hvx_params);
+                  NRF_LOG_INFO("sd_ble_gatts_hvx result: %x. \r\n", err_code);
+              }
+              else
+              {
+                  err_code = NRF_ERROR_INVALID_STATE;
+                  NRF_LOG_INFO("sd_ble_gatts_hvx result: NRF_ERROR_INVALID_STATE. \r\n");
+              }
+              return err_code;
+          }
+  ```
+  
+ * ทำการเพิ่มฟังก์ชั่น on_ser_evt() สำหรับการรับค่าการ event ที่ส่งใน BLE
+  ```
+              static void on_ser_evt(ble_ser_t     * p_ser_service,
+                                   ble_ser_evt_t * p_evt)
+            {
+                ret_code_t err_code;
+
+                switch(p_evt->evt_type)
+                {
+                    case BLE_SER_EVT_NOTIFICATION_ENABLED:
+
+                         err_code = app_timer_start(m_notification_timer_id, NOTIFICATION_INTERVAL, NULL);
+                         APP_ERROR_CHECK(err_code);
+                         break;
+
+                    case BLE_SER_EVT_NOTIFICATION_DISABLED:
+
+                        err_code = app_timer_stop(m_notification_timer_id);
+                        APP_ERROR_CHECK(err_code);
+                        break;
+
+                    case BLE_SER_EVT_CONNECTED:
+                        break;
+
+                    case BLE_SER_EVT_DISCONNECTED:
+                          break;
+
+                    default:
+                          // No implementation needed.
+                          break;
+                }
+            }
+  ```
+  
+* จากนั้นทำการเพิ่ม timer สำหรับการอัพเดตข้อมูลที่เราต้องการส่ง โดยเพิ่มในไฟล์ main.c
+
+  ```
+    #define NOTIFICATION_INTERVAL           APP_TIMER_TICKS(1000)
+    APP_TIMER_DEF(m_notification_timer_id);
+  ```
+  
+  ทำการเพิ่ม timer ใน timers_init()
+  
+  ```
+     err_code = app_timer_create(&m_notification_timer_id,  APP_TIMER_MODE_REPEATED, notification_timeout_handler);
+
+     APP_ERROR_CHECK(err_code);
+  ```
+  ทำการเพิ่มฟังก์ชั่น notification_timeout_handler() เขาไปใน main.c ดังนี้
+  ```
+    UNUSED_PARAMETER(p_context);
+    ret_code_t err_code;
+
+    // Increment the value of m_custom_value before nortifing it.
+    m_custom_value++;
+
+    err_code = ble_ser_custom_value_update(&m_ser, m_custom_value);
+    APP_ERROR_CHECK(err_code);
+  ```
+  
+* เมื่อเสร็จแล้วทำการ compile และ flash program และ ทำการเปิด application nRF Connect ในเมือถือ และการ Scan หา BLE ที่เราได้สร้างขึ้นมา จะเห็นว่าเป็น Environmental_Sensing Service กดเข้าไปจะเห็น characteristic แล้วกดปุ่ม read ค่าที่ได้จะมีค่าเพิ่มขึ้นเรื่อยๆ เพราะคำสั่งเราได้ตั่งค่าให้เพิ่มขึ้นไปเรื่อยๆ m_custom_value++; ดังนี้
+
+  ![char-2](https://user-images.githubusercontent.com/27261111/47138772-7a3d1500-d2e4-11e8-9c23-a72a7af8d202.png)
+  
+  เราสามารถเขียนค่าส่งไปยัง ble device ได้ และเมื่อทำการอ่านค่าจะเห็นได้ว่าค่าที่ได้จะเป็นค่าที่เราส่งไปนั้นเอง
+  
+  ![char-3](https://user-images.githubusercontent.com/27261111/47138793-8c1eb800-d2e4-11e8-9e73-47db08ee5a14.png)
+  
+  เมื่อเราลองทำการกดปุ่ม notify แล้วค่าจะมีการบวกเพิ่มขึ้นที่ละ 1 ตามโปรแกรมที่เราได้เขียนไว้
+  
+  ![char-4](https://user-images.githubusercontent.com/27261111/47138842-ac4e7700-d2e4-11e8-9d1f-3b7411f0c030.png)
