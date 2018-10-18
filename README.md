@@ -67,51 +67,51 @@ Create Service & Characteristic
   โดยรูปแบบของ UUID จะเป็น 8-4-4-4-12 โดยการใส่ UUID เราจะใส่แบบเรียงจากหลังมาหน้า ดังนี้
 
   ```
-  #define MY_SERVICE_UUID_BASE         {0x44, 0x05, 0x61, 0x10, 0x61, 0x85, 0xc0, 0x84, 0x29, 0x4a, 0x8f, 0x7f, 0xd3, 0xff, 0x14, 0x9b}
-#define MY_SERVICE_UUID               0xABCD
+    #define MY_SERVICE_UUID_BASE         {0x44, 0x05, 0x61, 0x10, 0x61, 0x85, 0xc0, 0x84, 0x29, 0x4a, 0x8f, 0x7f, 0xd3, 0xff,     0x14, 0x9b}
+    #define MY_SERVICE_UUID               0xABCD
   ```
   
 * จากนั้นทำการ สร้าง struct สำหรับเก็บค่าต่างๆ ตามนี้
 
   ```
-  typedef enum
-  {
-      BLE_SER_EVT_NOTIFICATION_ENABLED,
-      BLE_SER_EVT_NOTIFICATION_DISABLED,
-      BLE_SER_EVT_DISCONNECTED,
-      BLE_SER_EVT_CONNECTED
-  } ble_ser_evt_type_t;
+      typedef enum
+      {
+          BLE_SER_EVT_NOTIFICATION_ENABLED,
+          BLE_SER_EVT_NOTIFICATION_DISABLED,
+          BLE_SER_EVT_DISCONNECTED,
+          BLE_SER_EVT_CONNECTED
+      } ble_ser_evt_type_t;
 
-  typedef struct
-  {
-      ble_ser_evt_type_t evt_type;                                 
-  } ble_ser_evt_t;
+      typedef struct
+      {
+          ble_ser_evt_type_t evt_type;                                 
+      } ble_ser_evt_t;
 
-  typedef struct ble_ser_s ble_ser_t;
+      typedef struct ble_ser_s ble_ser_t;
 
-  typedef void (*ble_ser_evt_handler_t) (ble_ser_t * p_bas, ble_ser_evt_t * p_evt);
+      typedef void (*ble_ser_evt_handler_t) (ble_ser_t * p_bas, ble_ser_evt_t * p_evt);
 
-  typedef struct
-  {
-      ble_ser_evt_handler_t         evt_handler;
-      uint8_t                       initial_custom_value;
-      ble_srv_cccd_security_mode_t  custom_value_char_attr_md;
-  } ble_ser_init_t;
+      typedef struct
+      {
+          ble_ser_evt_handler_t         evt_handler;
+          uint8_t                       initial_custom_value;
+          ble_srv_cccd_security_mode_t  custom_value_char_attr_md;
+      } ble_ser_init_t;
 
-  struct ble_ser_s
-  {
-      ble_ser_evt_handler_t         evt_handler;
-      uint16_t                      service_handle;
-      ble_gatts_char_handles_t      custom_value_handles;
-      uint16_t                      conn_handle;
-      uint8_t                       uuid_type;
-  };
+      struct ble_ser_s
+      {
+          ble_ser_evt_handler_t         evt_handler;
+          uint16_t                      service_handle;
+          ble_gatts_char_handles_t      custom_value_handles;
+          uint16_t                      conn_handle;
+          uint8_t                       uuid_type;
+      };
   ```
   
 * ตั่งชื่อ function ที่จะต้องไปใช้ ใน ble_ser.c สำหรับเชื่อมโยงการทำงาน เป็นอันเสร็จ สำหรับ ไฟล์ ble_ser.h
 
   ```
-  uint32_t ble_ser_init(ble_ser_t * p_ser, const ble_ser_init_t * p_ser_init);
+    uint32_t ble_ser_init(ble_ser_t * p_ser, const ble_ser_init_t * p_ser_init);
   ```
   
 * ต่อไปเป็นการสร้างจัดการในส่วนไฟล์ ble_ser.c อันดับแรกสร้างไฟล์ ble_ser.c ขึ้นมา พร้อมเปิดไฟล์ขึ้นมาและทำการ Include ไฟล์ต่างๆ
