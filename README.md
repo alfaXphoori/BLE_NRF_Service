@@ -15,13 +15,20 @@ Create Service & Characteristic
 * Download nRF5-SDK จาก https://www.nordicsemi.com/eng/Products/Bluetooth-low-energy/nRF5-SDK
   ![install-3](https://user-images.githubusercontent.com/27261111/47130546-58cc3100-d2c4-11e8-9a83-70eee5cb0919.png)
   
-* ทำการ install Contiki-os ด้วยการ Clone Contiki-os จาก github เมื่อ clone เสร็จแล้วทำการ update submodule ของ Contiki-os
-  ```
-  git clone https://github.com/contiki-os/contiki
-  cd contiki
-  git submodule update –init
-  ```
-  ![tools-3](https://user-images.githubusercontent.com/27261111/45929364-c5306a80-bf7a-11e8-8cf2-4b2fc9ed644c.png)
+* ทำการ unzip เป็นอันเสร็จ จากนั้นเข้าไปยัง folder ที่ได้ทำการ unzip ไว้ เข้าไปที่ nRF5_SDK/exsamples/ble_peripheral/ble_app_blinky/pca10040/s132/ses แล้วทำการเปิดไฟล์ ble_app_blinky_pca10040_s132.emProject โดยโปรแกรม Segger Embedded
+  ![install-4](https://user-images.githubusercontent.com/27261111/47135903-2af2e680-d2dc-11e8-84cc-838c3d657066.png)
+* ทำการ compile โดยการกด F7 เมื่อ compile ผ่านจะแสดงขนาดของ Flash โปรแกรม
+  ![install-5](https://user-images.githubusercontent.com/27261111/47136011-8c1aba00-d2dc-11e8-9a15-2d5066dc5f55.png)
+* ทำการ Flash โปรแกรมลงบอร์ดnRF52832 โดยเชื่อมต่อ บอร์ดเข้ากับคอมพิวเตอร์ และทำการกด F5  เมื่อเสร็จแล้วทำการกดปุ่ม Shift+F5 เพื่อให้บอร์ดเริ่มทำงาน 
+  ![install-6](https://user-images.githubusercontent.com/27261111/47136051-af456980-d2dc-11e8-9cda-18d22df22d17.png)
+* •	จากนั้นทำการ Download Application nRF Connect บนมือถือ เพื่อใช้ตรวจจับ สัญญาณ BLE ที่ปล่อยออกมา 
+nRF Connnect : Anddroid
+ https://play.google.com/store/apps/details?id=no.nordicsemi.android.mcp&hl=th
+
+nRF Connnect : iOS
+https://itunes.apple.com/th/app/nrf-connect/id1054362403?mt=8
+เมื่อเปิด App nRF Connect ขึ้นมา จะเห็น บอร์ดปล่อยสัญญาณออกมาชื่อ Nordic_Blinky เป็นอันเสร็จขึ้นตอนการ Compile และ การFlash โปรแกรมลงบอร์ด nRF52832 
+  ![install-7](https://user-images.githubusercontent.com/27261111/47136094-d0a65580-d2dc-11e8-8d0f-e6daae3d35f6.png)
 
 ## Flash program by Ubuntu
 * ทำการ Config file ccfg.c ใน Contiki โดยใช้ editor ต่างๆ โดยผู้เขียนจะใช้ vim ในการ edit
