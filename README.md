@@ -6,29 +6,15 @@ Create Service & Characteristic
 * [Boarder router](#boarder-router)
 
 ## Install and Compile NRF52 by SEGGER Embedded Studio
-* •	Download โปรแกรม Segger Embedded Studio จาก https://www.segger.com/downloads/embedded-studio
+* Download โปรแกรม Segger Embedded Studio จาก https://www.segger.com/downloads/embedded-studio
   ![install-1](https://user-images.githubusercontent.com/27261111/47130455-f1ae7c80-d2c3-11e8-854e-56ccbae629ef.png)
 
-* เมื่อ install เสร็จทำการ update ubuntu และ install git ผ่านทาง terminal:
-  ```
-  sudo apt-get upgade -y
-  sudo apt-get install git -y
-  sudo apt-get install build-essential -y
-
-  ```
-* Install gcc-arm embedded and other Toolchain ด้วยคำสั่ง
-  ```
-  sudo add-apt-repository ppa:team-gcc-arm-embedded/ppa
-  sudo apt-get update -y
-  sudo apt-get install gcc-arm-embedded -y
-  sudo apt-get install srecord -y
-  sudo apt-get install python-serial
-  ```
-  เมื่อทำการติดตั้งเสร็จจะได้ และลองตรวจสอบ arm-gcc ด้วยคำสั่ง จะได้ดังภาพ
-  ```
-  arm-none-eabi-gcc --version
-  ```
-  ![tools-2](https://user-images.githubusercontent.com/27261111/45929330-43404180-bf7a-11e8-8fcc-416dc660c07a.png)
+* ทำการติดตั้งโปรแกรม เมื่อเปิดโปรแกรมขึ้นมาจะได้ดังภาพ โดยโปรแกรมนี้จะเป็นตัว compile และ แล้ว flash โปรแกรมไปยังบอร์ด BLE nRF52832
+  ![install-2](https://user-images.githubusercontent.com/27261111/47130492-20c4ee00-d2c4-11e8-946c-3bd56e9ab98d.png)
+  
+* Download nRF5-SDK จาก https://www.nordicsemi.com/eng/Products/Bluetooth-low-energy/nRF5-SDK
+  ![install-3](https://user-images.githubusercontent.com/27261111/47130546-58cc3100-d2c4-11e8-9a83-70eee5cb0919.png)
+  
 * ทำการ install Contiki-os ด้วยการ Clone Contiki-os จาก github เมื่อ clone เสร็จแล้วทำการ update submodule ของ Contiki-os
   ```
   git clone https://github.com/contiki-os/contiki
